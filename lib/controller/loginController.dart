@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:hrmapp/utils/helperWid.dart';
+import 'package:hrmapp/view/todo/todo_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,15 +13,14 @@ class LoginController extends GetxController {
   TextEditingController passwordController = TextEditingController();
   RxBool isLoading = false.obs;
 
-
   Future<String> loginApi(String baseUrl) async {
     isLoading.value = true;
-    // print("Login Controller");
+    // debugPrint("Login Controller");
 
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
-    // print("Email: $email");
-    // print("Password: $password");
+    // debugPrint("Email: $email");
+    // debugPrint("Password: $password");
     FocusManager.instance.primaryFocus!.unfocus();
     try {
       final credentials = {
@@ -42,6 +42,7 @@ class LoginController extends GetxController {
         debugPrint('Time ${DateTime.now()}');
         HelperWidgets.Greentoaster("You are Loggined");
         isLoading.value = false;
+        Get.off(TodoPage());
         return response.body;
       } else {
         isLoading.value = false;

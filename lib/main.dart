@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hrmapp/model/TodoResponse.dart';
 import 'package:hrmapp/view/login_screen.dart';
+import 'package:hrmapp/view/todo/todo_page.dart';
+import 'package:hrmapp/view/todo/todo_submit.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,10 +27,24 @@ class MyApp extends StatelessWidget {
           ),
           filled: true,
           fillColor: Colors.white70,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
+            textStyle: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 25,
+            ),
+            padding: EdgeInsets.symmetric(vertical: 8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(14),),
+            )
+          )
         )
         ),
       debugShowCheckedModeBanner: false,
-      home: const LoginPage(),
+      home: const TodoSubmit(),
     );
   }
 }
