@@ -166,7 +166,6 @@ class TodoSubmitController extends GetxController {
         'Authorization': "Bearer $token"
       };
 
-      // Make HTTP POST request
       final response = await http.post(Uri.parse(url), headers: headers, body: jsonEncode(formData));
 
       // Handle response

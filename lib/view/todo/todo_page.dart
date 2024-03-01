@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:hrmapp/controller/todoControllers/todoSubmitController.dart';
 import 'package:hrmapp/utils/todo_helperWidgets.dart';
 import 'package:hrmapp/view/todo/todo_submit.dart';
 import 'package:http/http.dart' as http;
@@ -18,11 +18,66 @@ class TodoPage extends StatefulWidget {
 }
 
 class _TodoPageState extends State<TodoPage> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
+  deleteTask(
+      String createdById,
+      createdAtUtc,
+      updatedById,
+      updatedAtUtc,
+      todoId,
+      todoItem,
+      description,
+      isDone,
+      todoTypeId,
+      startDate,
+      endDate,
+      onBehalfId,
+      todoPriorityId) async {
+    final todoData = {
+      "createdById": createdById,
+      "createdAtUtc": createdAtUtc,
+      "updatedById": updatedById,
+      "updatedAtUtc": updatedAtUtc,
+      "todoId": todoId,
+      "todoItem": todoItem,
+      "description": description,
+      "isDone": isDone,
+      "todoTypeId": todoTypeId,
+      "startDate": startDate,
+      "endDate": endDate,
+      "onBehalfId": onBehalfId,
+      "todoPriorityId": todoPriorityId
+    };
+
+    const url = "${GlobalController.baseUrl}/TodoApi/Delete";
+    final token = await SharedPreferences.getInstance()
+        .then((prefs) => prefs.getString("token"));
+    final headers = {
+      'Content-Type': 'application/json-patch+json',
+      'Accept': 'application/json',
+      'Authorization': "Bearer $token"
+    };
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: headers, body: jsonEncode(todoData));
+
+      // Handle response
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        debugPrint("Form Submitted: $data");
+        if (data['isSuccess']) {}
+        Get.snackbar("Success", "Todo Deleted!");
+        Get.snackbar("Success", "Todo Deleted!");
+
+      } else {
+        final data = jsonDecode(response.body);
+        Get.snackbar("Error", data['errors'].toString());
+      }
+    } catch (e) {
+      debugPrint("Failed to submit form: $e");
+      Get.snackbar("Error", "Failed to submit form. Please try again later.");
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     Future fetchData() async {
@@ -61,8 +116,10 @@ class _TodoPageState extends State<TodoPage> {
         onPressed: () => Get.to(TodoSubmit()),
       ),
       body: RefreshIndicator(
-        onRefresh: ()async{
-          await Future.delayed(Duration(seconds: 1));
+        onRefresh: () async {
+          setState(() {
+
+          });
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -75,8 +132,8 @@ class _TodoPageState extends State<TodoPage> {
                     children: [
                       Text(
                         "Todo",
-                        style:
-                            TextStyle(fontSize: 35, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            fontSize: 35, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
@@ -95,43 +152,75 @@ class _TodoPageState extends State<TodoPage> {
                             itemCount: snapshot.data!['data'].length,
                             itemBuilder: (context, index) {
                               final content = snapshot.data!['data'][index];
-                              DateTime originalDate =
-                                  DateTime.parse(content['startDate'].toString());
+                              // debugPrint("Card Data ${content.toString()}");
+                              DateTime originalDate = DateTime.parse(
+                                  content['startDate'].toString());
                               String formattedDate = DateFormat('dd-MM-yyyy')
                                   .format(originalDate)
                                   .toString();
-                              return Card(
-                                child: ListTile(
-                                    contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 8),
-                                    leading: CircleAvatar(
-                                      child: Text("${index + 1}"),
-                                    ),
-                                    title: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                              return Slidable(
+                                key: ValueKey(content['todoType']['name']),
+                                endActionPane: ActionPane(
+                                  motion: const ScrollMotion(),
+                                  children: [
+                                    SlidableAction(
+                                        backgroundColor: Colors.red,
+                                        borderRadius: BorderRadius.circular(20),
+                                        autoClose: true,
+                                        icon: Icons.delete,
+                                        label: "Remove",
+                                        onPressed: (context) {
+                                          String createdById = content['createdById'];
+                                          String createdAtUtc = content['createdAtUtc'];
+                                          String updatedById = content['updatedById'];
+                                          String updatedAtUtc = content['updatedAtUtc'];
+                                          String todoId = content['todoId'];
+                                          String todoItem = content['todoItem'];
+                                          String description = content['description'];
+                                          bool isDone = content['isDone'];
+                                          String todoTypeId = content['todoTypeId'];
+                                          String startDate = content['startDate'];
+                                          String endDate = content['endDate'];
+                                          String onBehalfId = content['onBehalfId'];
+                                          String todoPriorityId = content['todoPriorityId'];
+                                          deleteTask(createdById,createdAtUtc,updatedById,updatedAtUtc,todoId,todoItem,description,isDone,todoTypeId,startDate,endDate,onBehalfId,todoPriorityId);
+                                          setState(() {});
+                                        })
+                                  ],
+                                ),
+                                child: Card(
+                                  child: ListTile(
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 15, vertical: 8),
+                                      leading: CircleAvatar(
+                                        child: Text("${index + 1}"),
+                                      ),
+                                      title: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              content['todoItem'].toString(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleLarge,
+                                            )
+                                          ]),
+                                      subtitle: Column(
                                         children: [
-                                          Text(
-                                            content['todoItem'].toString(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleLarge,
-                                          )
-                                        ]),
-                                    subtitle: Column(
-                                      children: [
-                                        TodoHelper.RowHelper("Priority: ",
-                                            "${content['todoPriority']['name']}"),
-                                        TodoHelper.RowHelper("Type: ",
-                                            "${content['todoType']['name']}"),
-                                        TodoHelper.RowHelper("OnBehalf: ",
-                                            "${content['onBehalf']['firstName']}"),
-                                        TodoHelper.RowHelper(
-                                            "Start Date: ", "$formattedDate"),
-                                        TodoHelper.RowHelper("IsDone: ",
-                                            "${content['isDone'] ? "Done" : "Not Done"}"),
-                                      ],
-                                    )),
+                                          TodoHelper.RowHelper("Priority: ",
+                                              "${content['todoPriority']['name']}"),
+                                          TodoHelper.RowHelper("Type: ",
+                                              "${content['todoType']['name']}"),
+                                          TodoHelper.RowHelper("OnBehalf: ",
+                                              "${content['onBehalf']['firstName']}"),
+                                          TodoHelper.RowHelper(
+                                              "Start Date: ", "$formattedDate"),
+                                          TodoHelper.RowHelper("IsDone: ",
+                                              "${content['isDone'] ? "Done" : "Not Done"}"),
+                                        ],
+                                      )),
+                                ),
                               );
                             },
                           ),
