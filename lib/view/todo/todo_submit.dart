@@ -1,14 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:hrmapp/controller/globalController.dart';
 import 'package:hrmapp/controller/todoControllers/todoSubmitController.dart';
-import 'package:hrmapp/model/DropdownModel.dart';
 import 'package:hrmapp/utils/helperWid.dart';
 import 'package:hrmapp/utils/todo_helperWidgets.dart';
-import 'package:intl/intl.dart';
 
 class TodoSubmit extends StatefulWidget {
   const TodoSubmit({super.key});
@@ -24,9 +20,6 @@ class _TodoSubmitState extends State<TodoSubmit> {
 
   @override
   Widget build(BuildContext context) {
-
-    List dropdownList = [ "value1", "value2" ];
-    String EmValue = "loading";
   
     return Scaffold(
       appBar: AppBar(
@@ -111,7 +104,7 @@ class _TodoSubmitState extends State<TodoSubmit> {
                               );
                             }).toList(),
                             onChanged: (newValue) {
-                              print("Dropdown Select: $newValue");
+                              debugPrint("Dropdown Select: $newValue");
                               todoSubmitController.todoType.value =
                                   newValue.toString();
                             },
@@ -158,7 +151,7 @@ class _TodoSubmitState extends State<TodoSubmit> {
                     ),
                     TodoHelper.SizedWid(),
                     DropdownMenu(
-                      label: Text("Employee"),
+                      label: const Text("Employee"),
                       dropdownMenuEntries: globalController.employeeData.map((value) {
                         return DropdownMenuEntry(
                           label: value['text'].toString(),
@@ -166,7 +159,7 @@ class _TodoSubmitState extends State<TodoSubmit> {
                         );
                       }).toList(),
                       onSelected: (newValue) {
-                        print("Dropdown Select: $newValue");
+                        debugPrint("Dropdown Select: $newValue");
                         todoSubmitController.selectedEmplyee.value = newValue.toString();
                       },
                       expandedInsets: const EdgeInsets.all(0),
@@ -192,13 +185,14 @@ class _TodoSubmitState extends State<TodoSubmit> {
                     ),
                     TodoHelper.SizedWid(),
                     todoSubmitController.isLoading.value
-                        ? Center(
+                        ? const Center(
                             child: CircularProgressIndicator(),
                           )
                         : SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
                                 onPressed: () {
+                                  FocusManager.instance.primaryFocus!.unfocus();
                                   if (!formKey.currentState!.validate()) {
                                     HelperWidgets.Errortoaster(
                                         "Field Required");

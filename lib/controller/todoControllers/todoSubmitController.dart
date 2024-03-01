@@ -1,9 +1,6 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_rx/get_rx.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/state_manager.dart';
 import 'package:hrmapp/controller/globalController.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -79,7 +76,7 @@ class TodoSubmitController extends GetxController {
             "value": i['value']
           });
         }
-        debugPrint("context ${context}");
+        debugPrint("context $context");
         return data;
       } else {
         throw Exception("Empty response body");
@@ -123,7 +120,7 @@ class TodoSubmitController extends GetxController {
             "value": i['value']
           });
         }
-        debugPrint("context ${context}");
+        debugPrint("context $context");
         return data;
       } else {
         throw Exception("Empty response body");
@@ -159,9 +156,9 @@ class TodoSubmitController extends GetxController {
         "TodoPriorityId": prior,
       };
 
-      print("FormData: ${formData.toString()}");
+      debugPrint("FormData: ${formData.toString()}");
 
-      final url = "${GlobalController.baseUrl}/TodoApi/Submit";
+      const url = "${GlobalController.baseUrl}/TodoApi/Submit";
       final token = await SharedPreferences.getInstance().then((prefs) => prefs.getString("token"));
       final headers = {
         'Content-Type': 'application/json-patch+json',
@@ -175,14 +172,24 @@ class TodoSubmitController extends GetxController {
       // Handle response
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print("Form Submitted: $data");
+        debugPrint("Form Submitted: $data");
+        if(data['isSuccess']){
+          itemController.value.text = "";
+          descController.value.text = "";
+          todoType.value = "";
+          startDate.value.text = "";
+          endDate.value.text = "";
+          selectedEmplyee.value = "";
+          priority.value = "";
+          isDone.value = false;
+        }
         Get.snackbar("Success", "Form Submitted! ${data['isSuccess']}");
       } else {
         final data = jsonDecode(response.body);
-        Get.snackbar("Error", data['errors'].toString() ?? "Unknown Error");
+        Get.snackbar("Error", data['errors'].toString());
       }
     } catch (e) {
-      print("Failed to submit form: $e");
+      debugPrint("Failed to submit form: $e");
       Get.snackbar("Error", "Failed to submit form. Please try again later.");
     }
   }
