@@ -1,8 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
+import 'package:hrmapp/controller/globalController.dart';
+import 'package:hrmapp/controller/todoControllers/todoSubmitController.dart';
+import 'package:hrmapp/model/DropdownModel.dart';
 import 'package:hrmapp/utils/helperWid.dart';
 import 'package:hrmapp/utils/todo_helperWidgets.dart';
+import 'package:intl/intl.dart';
 
 class TodoSubmit extends StatefulWidget {
   const TodoSubmit({super.key});
@@ -13,22 +19,15 @@ class TodoSubmit extends StatefulWidget {
 
 class _TodoSubmitState extends State<TodoSubmit> {
   final formKey = GlobalKey<FormState>();
-  DateTime date = DateTime.now();
-
-  void selectDate() async {
-    final DateTime? newDate = await showDatePicker(
-      context: context,
-      initialDate: date,
-      firstDate: DateTime(2024),
-      lastDate: DateTime(2030),
-    );
-    if (newDate != null) {
-        date = newDate;
-    }
-  }
+  TodoSubmitController todoSubmitController = Get.put(TodoSubmitController());
+  GlobalController globalController = Get.put(GlobalController());
 
   @override
   Widget build(BuildContext context) {
+
+    List dropdownList = [ "value1", "value2" ];
+    String EmValue = "loading";
+  
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -42,85 +41,175 @@ class _TodoSubmitState extends State<TodoSubmit> {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Form(
             key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextFormField(
-                  decoration: const InputDecoration(label: Text("Todo Item")),
-                  validator: RequiredValidator(errorText: "Required"),
-                ),
-                TodoHelper.SizedWid(),
-                TextFormField(
-                  decoration: const InputDecoration(label: Text("Description")),
-                  validator: RequiredValidator(errorText: "Required"),
-                ),
-                TodoHelper.SizedWid(),
-                TextFormField(
-                  decoration: const InputDecoration(label: Text("Prioritat")),
-                  validator: RequiredValidator(errorText: "Required"),
-                ),
-                TodoHelper.SizedWid(),
-                TextFormField(
-                  decoration: const InputDecoration(label: Text("Todo Type")),
-                  validator: RequiredValidator(errorText: "Required"),
-                ),
-                TodoHelper.SizedWid(),
-                Row(
+            child: Obx(() => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: TextFormField(
-                        decoration: const InputDecoration(label: Text("Start Date")),
-                        onTap: () {
-                          selectDate();
-                        },
-                        validator: RequiredValidator(errorText: "Required"),
-                      ),
+                    SizedBox(
+                      height: Get.width * 0.025,
                     ),
-                    SizedBox(width: Get.width * 0.05),
-                    Expanded(
-                      child: TextFormField(
-                        decoration: const InputDecoration(label: Text("End Date")),
-                        validator: RequiredValidator(errorText: "Required"),
-                        onTap: () => selectDate(),
-                      ),
+                    TextFormField(
+                      decoration:
+                          const InputDecoration(label: Text("Todo Item")),
+                      validator: RequiredValidator(errorText: "Required"),
+                      controller: todoSubmitController.itemController.value,
                     ),
+                    TodoHelper.SizedWid(),
+                    TextFormField(
+                      decoration:
+                          const InputDecoration(label: Text("Description")),
+                      validator: RequiredValidator(errorText: "Required"),
+                      controller: todoSubmitController.descController.value,
+                    ),
+                    TodoHelper.SizedWid(),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: DropdownButtonFormField(
+                            decoration: const InputDecoration(
+                                labelText: "Select Prioritat"),
+                            value: todoSubmitController
+                                    .priorityDropdownOptions.isNotEmpty
+                                ? todoSubmitController
+                                    .priorityDropdownOptions.first['text']
+                                : "",
+                            items: todoSubmitController.priorityDropdownOptions
+                                .map((Map item) {
+                              return DropdownMenuItem<String>(
+                                value: item['value'],
+                                child: Text(item['text']),
+                              );
+                            }).toList(),
+                            onChanged: (newValue) {
+                              // print("New Value: $newValue");
+                              todoSubmitController.priority.value =
+                                  newValue.toString();
+                            },
+                            validator: (value){
+                              if(value == null || value == ""){
+                                return "Required";
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        SizedBox(width: Get.width * 0.05),
+                        Expanded(
+                          child: DropdownButtonFormField(
+                            decoration:
+                                const InputDecoration(labelText: "Select Type"),
+                            value: todoSubmitController
+                                    .todoTypeDropdownOptions.isNotEmpty
+                                ? todoSubmitController
+                                    .todoTypeDropdownOptions.first['text']
+                                : "",
+                            items: todoSubmitController.todoTypeDropdownOptions
+                                .map((Map item) {
+                              return DropdownMenuItem<String>(
+                                value: item['value'],
+                                child: Text(item['text']),
+                              );
+                            }).toList(),
+                            onChanged: (newValue) {
+                              print("Dropdown Select: $newValue");
+                              todoSubmitController.todoType.value =
+                                  newValue.toString();
+                            },
+                              validator: (value){
+                                if(value == null || value == ""){
+                                  return "Required";
+                                }
+                                return null;
+                              },
+                          ),
+                        ),
+                      ],
+                    ),
+                    TodoHelper.SizedWid(),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: todoSubmitController.startDate.value,
+                            decoration: const InputDecoration(
+                                label: Text("Start Date")),
+                            onTap: () {
+                              todoSubmitController.selectDate(context,
+                                  todoSubmitController.startDate.value);
+                            },
+                            validator: RequiredValidator(errorText: "Required"),
+                            // controller: todoSubmitController.startDate.value,
+                          ),
+                        ),
+                        SizedBox(width: Get.width * 0.05),
+                        Expanded(
+                          child: TextFormField(
+                            controller: todoSubmitController.endDate.value,
+                            decoration:
+                                const InputDecoration(label: Text("End Date")),
+                            onTap: () {
+                              todoSubmitController.selectDate(
+                                  context, todoSubmitController.endDate.value);
+                            },
+                            validator: RequiredValidator(errorText: "Required"),
+                          ),
+                        ),
+                      ],
+                    ),
+                    TodoHelper.SizedWid(),
+                    DropdownMenu(
+                      label: Text("Employee"),
+                      dropdownMenuEntries: globalController.employeeData.map((value) {
+                        return DropdownMenuEntry(
+                          label: value['text'].toString(),
+                          value: value['value'].toString(),
+                        );
+                      }).toList(),
+                      onSelected: (newValue) {
+                        print("Dropdown Select: $newValue");
+                        todoSubmitController.selectedEmplyee.value = newValue.toString();
+                      },
+                      expandedInsets: const EdgeInsets.all(0),
+                    ),
+                    TodoHelper.SizedWid(),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        const Text(
+                          "Is Done? ",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 20),
+                        ),
+                        const SizedBox(width: 10),
+                        Switch(
+                            value: todoSubmitController.isDone.value,
+                            onChanged: (value) =>
+                                todoSubmitController.isDone.value = value),
+                      ],
+                    ),
+                    TodoHelper.SizedWid(),
+                    todoSubmitController.isLoading.value
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  if (!formKey.currentState!.validate()) {
+                                    HelperWidgets.Errortoaster(
+                                        "Field Required");
+                                    return;
+                                  }
+                                  // todoSubmitController.fetchPriority().obs;
+                                  todoSubmitController.submitTodo();
+                                },
+                                child: const Text("Submit")))
                   ],
-                ),
-                TodoHelper.SizedWid(),
-                TextFormField(
-                  decoration: const InputDecoration(label: Text("Mitarbeiter")),
-                  validator: RequiredValidator(errorText: "Required"),
-                ),
-                TodoHelper.SizedWid(),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    const Text(
-                      "Is Done? ",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
-                    ),
-                    const SizedBox(width: 10),
-                    Switch(value: false, onChanged: (value) {}),
-                  ],
-                ),
-                TodoHelper.SizedWid(),
-                SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          if (!formKey.currentState!.validate()) {
-                            HelperWidgets.Errortoaster("Field Required");
-                            return;
-                          }
-                        },
-                        child: const Text("Submit")))
-              ],
-            ),
+                )),
           ),
         ),
       ),

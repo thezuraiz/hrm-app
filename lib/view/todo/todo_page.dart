@@ -1,10 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hrmapp/controller/todoControllers/todoSubmitController.dart';
 import 'package:hrmapp/utils/todo_helperWidgets.dart';
+import 'package:hrmapp/view/todo/todo_submit.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+
+import '../../controller/globalController.dart';
 
 class TodoPage extends StatefulWidget {
   const TodoPage({super.key});
@@ -15,10 +19,16 @@ class TodoPage extends StatefulWidget {
 
 class _TodoPageState extends State<TodoPage> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     Future fetchData() async {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
+      GlobalController controller = Get.put(GlobalController());
       debugPrint("Token in : ${token}");
       try {
         final response = await http.get(
@@ -48,80 +58,92 @@ class _TodoPageState extends State<TodoPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () => Get.to(TodoSubmit()),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: SafeArea(
-          child: Column(
-            children: [
-              const Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Text(
-                      "Todo",
-                      style:
-                          TextStyle(fontSize: 35, fontWeight: FontWeight.w500),
-                    ),
-                  ],
+      body: RefreshIndicator(
+        onRefresh: ()async{
+          await Future.delayed(Duration(seconds: 1));
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: SafeArea(
+            child: Column(
+              children: [
+                const Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Todo",
+                        style:
+                            TextStyle(fontSize: 35, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              FutureBuilder(
-                future: fetchData(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text(snapshot.error.toString()),
-                      );
-                    } else if (snapshot.hasData) {
-                      return Expanded(
-                        child: ListView.builder(
-                          itemCount: snapshot.data!['data'].length,
-                          itemBuilder: (context, index) {
-                            final content = snapshot.data!['data'][index];
-                            DateTime originalDate =
-                                DateTime.parse(content['startDate'].toString());
-                            String formattedDate = DateFormat('dd-MM-yyyy')
-                                .format(originalDate)
-                                .toString();
-                            return Card(
-                              child: ListTile(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 8),
-                                  leading: CircleAvatar(
-                                    child: Text("${index + 1}"),
-                                  ),
-                                  title: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                FutureBuilder(
+                  future: fetchData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Text(snapshot.error.toString()),
+                        );
+                      } else if (snapshot.hasData) {
+                        return Expanded(
+                          child: ListView.builder(
+                            itemCount: snapshot.data!['data'].length,
+                            itemBuilder: (context, index) {
+                              final content = snapshot.data!['data'][index];
+                              DateTime originalDate =
+                                  DateTime.parse(content['startDate'].toString());
+                              String formattedDate = DateFormat('dd-MM-yyyy')
+                                  .format(originalDate)
+                                  .toString();
+                              return Card(
+                                child: ListTile(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 8),
+                                    leading: CircleAvatar(
+                                      child: Text("${index + 1}"),
+                                    ),
+                                    title: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            content['todoItem'].toString(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge,
+                                          )
+                                        ]),
+                                    subtitle: Column(
                                       children: [
-                                        Text(
-                                          content['todoItem'].toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleLarge,
-                                        )
-                                      ]),
-                                  subtitle: Column(
-                                    children: [
-                                      TodoHelper.RowHelper("Priority: ",
-                                          "${content['todoPriority']['name']}"),
-                                      TodoHelper.RowHelper("Type: ",
-                                          "${content['todoType']['name']}"),
-                                      TodoHelper.RowHelper("OnBehalf: ",
-                                          "${content['onBehalf']['firstName']}"),
-                                      TodoHelper.RowHelper(
-                                          "Start Date: ", "$formattedDate"),
-                                      TodoHelper.RowHelper("IsDone: ",
-                                          "${content['isDone'] ? "Done" : "Not Done"}"),
-                                    ],
-                                  )),
-                            );
-                          },
-                        ),
-                      );
+                                        TodoHelper.RowHelper("Priority: ",
+                                            "${content['todoPriority']['name']}"),
+                                        TodoHelper.RowHelper("Type: ",
+                                            "${content['todoType']['name']}"),
+                                        TodoHelper.RowHelper("OnBehalf: ",
+                                            "${content['onBehalf']['firstName']}"),
+                                        TodoHelper.RowHelper(
+                                            "Start Date: ", "$formattedDate"),
+                                        TodoHelper.RowHelper("IsDone: ",
+                                            "${content['isDone'] ? "Done" : "Not Done"}"),
+                                      ],
+                                    )),
+                              );
+                            },
+                          ),
+                        );
+                      } else {
+                        return SizedBox(
+                          height: Get.height * 0.8,
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
                     } else {
                       return SizedBox(
                         height: Get.height * 0.8,
@@ -130,17 +152,10 @@ class _TodoPageState extends State<TodoPage> {
                         ),
                       );
                     }
-                  } else {
-                    return SizedBox(
-                      height: Get.height * 0.8,
-                      child: const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
-                },
-              ),
-            ],
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
