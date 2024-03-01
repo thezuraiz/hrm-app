@@ -83,8 +83,7 @@ class _TodoPageState extends State<TodoPage> {
     Future fetchData() async {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
-      GlobalController controller = Get.put(GlobalController());
-      debugPrint("Token in : ${token}");
+      debugPrint("Token in : $token");
       try {
         final response = await http.get(
           Uri.parse("https://leaves-hrm.solutions36t.com/api/TodoApi"),
@@ -113,7 +112,7 @@ class _TodoPageState extends State<TodoPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () => Get.to(TodoSubmit()),
+        onPressed: () => Get.to(const TodoSubmit()),
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -127,7 +126,7 @@ class _TodoPageState extends State<TodoPage> {
             child: Column(
               children: [
                 const Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8.0),
                   child: Row(
                     children: [
                       Text(
@@ -190,7 +189,7 @@ class _TodoPageState extends State<TodoPage> {
                                 ),
                                 child: Card(
                                   child: ListTile(
-                                      contentPadding: EdgeInsets.symmetric(
+                                      contentPadding: const EdgeInsets.symmetric(
                                           horizontal: 15, vertical: 8),
                                       leading: CircleAvatar(
                                         child: Text("${index + 1}"),
@@ -215,9 +214,9 @@ class _TodoPageState extends State<TodoPage> {
                                           TodoHelper.RowHelper("OnBehalf: ",
                                               "${content['onBehalf']['firstName']}"),
                                           TodoHelper.RowHelper(
-                                              "Start Date: ", "$formattedDate"),
+                                              "Start Date: ", formattedDate),
                                           TodoHelper.RowHelper("IsDone: ",
-                                              "${content['isDone'] ? "Done" : "Not Done"}"),
+                                              content['isDone'] ? "Done" : "Not Done"),
                                         ],
                                       )),
                                 ),
