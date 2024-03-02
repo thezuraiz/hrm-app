@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:hrmapp/utils/helperWid.dart';
 import 'package:hrmapp/view/leaves/leave_submit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -173,21 +172,25 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                     //     "${cardData['leavePriority']}"),
                                     TodoHelper.RowHelper("OnBehalf: ",
                                         "${cardData['onBehalf']['firstName']} ${cardData['onBehalf']['lastName']}"),
-                                    TodoHelper.RowHelper("Start Date: ",
-                                        formattedDate(fromData)),
+                                    TodoHelper.RowHelper(
+                                      "Start Date: ",
+                                      formattedDate(fromData),
+                                    ),
                                     TodoHelper.RowHelper(
                                         "Last Date: ", formattedDate(toData)),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
+                                        const Text(
                                           "Is Approved",
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w500),
                                         ),
-                                        Checkbox(value: true, onChanged: (e) {})
+                                        Checkbox(
+                                            value: cardData['isApproved'],
+                                            onChanged: (e) {})
                                       ],
                                     )
                                   ],

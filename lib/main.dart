@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hrmapp/view/landingScreen.dart';
-import 'package:hrmapp/view/leaves/leave_screen.dart';
+import 'package:hrmapp/view/documents/documentApi.dart';
 import 'package:hrmapp/view/login_screen.dart';
 
 void main() {

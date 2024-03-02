@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hrmapp/utils/helperWid.dart';
+import 'package:hrmapp/view/documents/documentApi.dart';
 import 'package:hrmapp/view/leaves/leave_screen.dart';
 import 'package:hrmapp/view/todo/todo_page.dart';
 
@@ -103,7 +104,7 @@ class LandingScreen extends StatelessWidget {
                         child: Center(
                           child: Text(
                             "Urlaub",
-                            style: Theme.of(context).textTheme.displayMedium,
+                            style: Theme.of(context).textTheme.displaySmall,
                           ),
                         ),
                       ),
@@ -125,7 +126,7 @@ class LandingScreen extends StatelessWidget {
                         child: Center(
                           child: Text(
                             "Aufgaben",
-                            style: Theme.of(context).textTheme.displayMedium,
+                            style: Theme.of(context).textTheme.displaySmall,
                           ),
                         ),
                       ),
@@ -138,8 +139,7 @@ class LandingScreen extends StatelessWidget {
               ),
               InkWell(
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
-                onTap: () =>
-                    HelperWidgets.Errortoaster("Module Under Developement"),
+                onTap: () => Get.to(DocumentApi()),
                 child: Container(
                   height: Get.height * 0.235,
                   decoration: const BoxDecoration(
@@ -149,7 +149,7 @@ class LandingScreen extends StatelessWidget {
                   child: Center(
                     child: Text(
                       "Dokumente",
-                      style: Theme.of(context).textTheme.displayMedium,
+                      style: Theme.of(context).textTheme.displaySmall,
                     ),
                   ),
                 ),
