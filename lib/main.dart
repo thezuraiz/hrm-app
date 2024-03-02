@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hrmapp/model/TodoResponse.dart';
+import 'package:hrmapp/view/landingScreen.dart';
+import 'package:hrmapp/view/leaves/leave_screen.dart';
 import 'package:hrmapp/view/login_screen.dart';
-import 'package:hrmapp/view/todo/todo_page.dart';
-import 'package:hrmapp/view/todo/todo_submit.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,16 +27,19 @@ class MyApp extends StatelessWidget {
             filled: true,
             fillColor: Colors.white70,
           ),
+          appBarTheme: AppBarTheme(
+            centerTitle: false,
+          ),
           elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
-                  textStyle: TextStyle(
+                  textStyle: const TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 25,
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  shape: RoundedRectangleBorder(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(14),
                     ),
@@ -45,7 +47,7 @@ class MyApp extends StatelessWidget {
           dropdownMenuTheme: DropdownMenuThemeData(
             inputDecorationTheme: InputDecorationTheme(
               border: OutlineInputBorder(
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                   color: Colors.grey, // Define your desired border color
                   width: 1.0, // Define your desired border width
                 ),
@@ -53,7 +55,8 @@ class MyApp extends StatelessWidget {
                     20), // Define your desired border radius
               ),
             ),
-          )),
+          ),
+      ),
       debugShowCheckedModeBanner: false,
       home: const LoginPage(),
     );

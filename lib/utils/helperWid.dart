@@ -1,24 +1,24 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-class HelperWidgets{
-
-  static Errortoaster(String errMsg){
+class HelperWidgets {
+  static Errortoaster(String errMsg) {
     return Get.snackbar(
       "Error",
-      "$errMsg",
+      errMsg,
       backgroundColor: Colors.red,
-      colorText: Colors.white
+      colorText: Colors.white,
+      margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
     );
   }
 
-  static Greentoaster(String Msg){
+  static Greentoaster(String Msg) {
     return Get.snackbar(
-        "Welcome",
-        "$Msg",
-        backgroundColor: Colors.blue,
-        colorText: Colors.white
+      "Welcome",
+      Msg,
+      backgroundColor: Colors.blue,
+      colorText: Colors.white,
+      margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
     );
   }
-
 }

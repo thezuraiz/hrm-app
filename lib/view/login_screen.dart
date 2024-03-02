@@ -49,13 +49,25 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: Get.height * 0.04,
                 ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: "Password",
-                    prefixIcon: Icon(Icons.password_outlined),
+                Obx(
+                  () => TextFormField(
+                    decoration: InputDecoration(
+                      hintText: "Password",
+                      prefixIcon: Icon(Icons.password_outlined),
+                      suffixIcon: InkWell(
+                        splashColor: Colors.transparent,
+                        child: Icon(
+                          loginController.showPassword.value
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onTap: () => loginController.showPassword.toggle(),
+                      ),
+                    ),
+                    obscureText: !loginController.showPassword.value,
+                    controller: loginController.passwordController,
+                    validator: RequiredValidator(errorText: "Required"),
                   ),
-                  controller: loginController.passwordController,
-                  validator: RequiredValidator(errorText: "Required"),
                 ),
                 SizedBox(
                   height: Get.height * 0.08,
@@ -73,14 +85,15 @@ class _LoginPageState extends State<LoginPage> {
                     Obx(
                       () => loginController.isLoading.value
                           ? const CircularProgressIndicator()
-                          : InkWell(
-                              onTap: () {
-                                if(!formKey.currentState!.validate()){
+                          : IconButton(
+                              onPressed: () {
+                                if (!formKey.currentState!.validate()) {
                                   return;
                                 }
-                                loginController.loginApi(GlobalController.baseUrl);
+                                loginController
+                                    .loginApi(GlobalController.baseUrl);
                               },
-                              child: const CircleAvatar(
+                              icon: CircleAvatar(
                                 backgroundColor: Colors.black,
                                 radius: 33,
                                 child: Icon(

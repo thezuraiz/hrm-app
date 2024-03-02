@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:hrmapp/controller/globalController.dart';
 import 'package:hrmapp/utils/helperWid.dart';
+import 'package:hrmapp/view/landingScreen.dart';
 import 'package:hrmapp/view/todo/todo_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,11 +15,11 @@ class LoginController extends GetxController {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  RxBool showPassword = false.obs;
   RxBool isLoading = false.obs;
 
   Future<String> loginApi(String baseUrl) async {
     isLoading.value = true;
-    // debugPrint("Login Controller");
 
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
@@ -45,7 +46,7 @@ class LoginController extends GetxController {
         debugPrint('Time ${DateTime.now()}');
         HelperWidgets.Greentoaster("You are Loggined");
         isLoading.value = false;
-        Get.off(TodoPage());
+        Get.off(const LandingScreen());
         return response.body;
       } else {
         isLoading.value = false;

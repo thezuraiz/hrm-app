@@ -1,13 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:hrmapp/controller/globalController.dart';
+import 'package:hrmapp/utils/helperWid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class TodoSubmitController extends GetxController {
   @override
-  void onInit()async{
+  void onInit() async {
     super.onInit();
     await fetchPriority();
     await fetchTodoType();
@@ -20,18 +22,17 @@ class TodoSubmitController extends GetxController {
 
   RxString selectedEmplyee = ''.obs;
 
-
   RxBool isDone = false.obs;
   RxBool isLoading = false.obs;
 
-  RxList<Map> priorityDropdownOptions = <Map<dynamic,dynamic>>[].obs;
+  RxList<Map> priorityDropdownOptions = <Map<dynamic, dynamic>>[].obs;
   RxString priority = ''.obs;
 
-  RxList<Map> todoTypeDropdownOptions = <Map<dynamic,dynamic>>[].obs;
+  RxList<Map> todoTypeDropdownOptions = <Map<dynamic, dynamic>>[].obs;
   RxString todoType = ''.obs;
 
-
-  Future<void> selectDate(BuildContext context,TextEditingController controller) async {
+  Future<void> selectDate(
+      BuildContext context, TextEditingController controller) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -40,7 +41,7 @@ class TodoSubmitController extends GetxController {
     );
     if (picked != null) {
       controller.text = picked.toString();
-      }
+    }
   }
 
   Future fetchPriority() async {
@@ -131,8 +132,8 @@ class TodoSubmitController extends GetxController {
     }
   }
 
-
   submitTodo() async {
+    isLoading.value = true;
     try {
       // Get required controllers
       final item = itemController.value.text.trim().toString();
@@ -152,27 +153,29 @@ class TodoSubmitController extends GetxController {
         "isDone": done,
         "startDate": start,
         "endDate": end,
-        "onBehalfId": behalfId ,
+        "onBehalfId": behalfId,
         "TodoPriorityId": prior,
       };
 
       debugPrint("FormData: ${formData.toString()}");
 
       const url = "${GlobalController.baseUrl}/TodoApi/Submit";
-      final token = await SharedPreferences.getInstance().then((prefs) => prefs.getString("token"));
+      final token = await SharedPreferences.getInstance()
+          .then((prefs) => prefs.getString("token"));
       final headers = {
         'Content-Type': 'application/json-patch+json',
         'Accept': 'application/json',
         'Authorization': "Bearer $token"
       };
 
-      final response = await http.post(Uri.parse(url), headers: headers, body: jsonEncode(formData));
+      final response = await http.post(Uri.parse(url),
+          headers: headers, body: jsonEncode(formData));
 
       // Handle response
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         debugPrint("Form Submitted: $data");
-        if(data['isSuccess']){
+        if (data['isSuccess']) {
           itemController.value.text = "";
           descController.value.text = "";
           todoType.value = "";
@@ -182,15 +185,22 @@ class TodoSubmitController extends GetxController {
           priority.value = "";
           isDone.value = false;
         }
-        Get.snackbar("Success", "Form Submitted! ${data['isSuccess']}");
+        isLoading.value = false;
+        HelperWidgets.Greentoaster("Form Submitted! ${data['isSuccess']}");
       } else {
         final data = jsonDecode(response.body);
-        Get.snackbar("Error", data['errors'].toString());
+        isLoading.value = false;
+        // Get.snackbar("Error", data['errors'].toString());
+        HelperWidgets.Errortoaster("Something Went Wrong");
       }
+    } on SocketException catch (err) {
+      isLoading.value = false;
+      HelperWidgets.Errortoaster("Internet Connection Failed");
     } catch (e) {
+      isLoading.value = false;
       debugPrint("Failed to submit form: $e");
-      Get.snackbar("Error", "Failed to submit form. Please try again later.");
+      HelperWidgets.Errortoaster(
+          "Failed to submit form. Please try again later.");
     }
   }
-
 }

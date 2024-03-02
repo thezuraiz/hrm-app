@@ -7,7 +7,6 @@ import 'package:hrmapp/view/todo/todo_submit.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-
 import '../../controller/globalController.dart';
 
 class TodoPage extends StatefulWidget {
@@ -60,14 +59,11 @@ class _TodoPageState extends State<TodoPage> {
       final response = await http.post(Uri.parse(url),
           headers: headers, body: jsonEncode(todoData));
 
-      // Handle response
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         debugPrint("Form Submitted: $data");
         if (data['isSuccess']) {}
         Get.snackbar("Success", "Todo Deleted!");
-        Get.snackbar("Success", "Todo Deleted!");
-
       } else {
         final data = jsonDecode(response.body);
         Get.snackbar("Error", data['errors'].toString());
@@ -116,9 +112,7 @@ class _TodoPageState extends State<TodoPage> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          setState(() {
-
-          });
+          setState(() {});
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -169,28 +163,51 @@ class _TodoPageState extends State<TodoPage> {
                                         icon: Icons.delete,
                                         label: "Remove",
                                         onPressed: (context) {
-                                          String createdById = content['createdById'];
-                                          String createdAtUtc = content['createdAtUtc'];
-                                          String updatedById = content['updatedById'];
-                                          String updatedAtUtc = content['updatedAtUtc'];
+                                          String createdById =
+                                              content['createdById'];
+                                          String createdAtUtc =
+                                              content['createdAtUtc'];
+                                          String updatedById =
+                                              content['updatedById'];
+                                          String updatedAtUtc =
+                                              content['updatedAtUtc'];
                                           String todoId = content['todoId'];
                                           String todoItem = content['todoItem'];
-                                          String description = content['description'];
+                                          String description =
+                                              content['description'];
                                           bool isDone = content['isDone'];
-                                          String todoTypeId = content['todoTypeId'];
-                                          String startDate = content['startDate'];
+                                          String todoTypeId =
+                                              content['todoTypeId'];
+                                          String startDate =
+                                              content['startDate'];
                                           String endDate = content['endDate'];
-                                          String onBehalfId = content['onBehalfId'];
-                                          String todoPriorityId = content['todoPriorityId'];
-                                          deleteTask(createdById,createdAtUtc,updatedById,updatedAtUtc,todoId,todoItem,description,isDone,todoTypeId,startDate,endDate,onBehalfId,todoPriorityId);
+                                          String onBehalfId =
+                                              content['onBehalfId'];
+                                          String todoPriorityId =
+                                              content['todoPriorityId'];
+                                          deleteTask(
+                                              createdById,
+                                              createdAtUtc,
+                                              updatedById,
+                                              updatedAtUtc,
+                                              todoId,
+                                              todoItem,
+                                              description,
+                                              isDone,
+                                              todoTypeId,
+                                              startDate,
+                                              endDate,
+                                              onBehalfId,
+                                              todoPriorityId);
                                           setState(() {});
                                         })
                                   ],
                                 ),
                                 child: Card(
                                   child: ListTile(
-                                      contentPadding: const EdgeInsets.symmetric(
-                                          horizontal: 15, vertical: 8),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 15, vertical: 8),
                                       leading: CircleAvatar(
                                         child: Text("${index + 1}"),
                                       ),
@@ -215,8 +232,11 @@ class _TodoPageState extends State<TodoPage> {
                                               "${content['onBehalf']['firstName']}"),
                                           TodoHelper.RowHelper(
                                               "Start Date: ", formattedDate),
-                                          TodoHelper.RowHelper("IsDone: ",
-                                              content['isDone'] ? "Done" : "Not Done"),
+                                          TodoHelper.RowHelper(
+                                              "IsDone: ",
+                                              content['isDone']
+                                                  ? "Done"
+                                                  : "Not Done"),
                                         ],
                                       )),
                                 ),
