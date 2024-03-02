@@ -61,4 +61,17 @@ class GlobalController extends GetxController{
     }
   }
 
+  Future<void> selectDate(
+      BuildContext context, TextEditingController controller) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2015, 8),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      controller.text = picked.toString();
+    }
+  }
+
 }

@@ -70,7 +70,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
                         border: Border.all(color: Colors.blue),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(50))),
-                    child: Icon(
+                    child: const Icon(
                       Icons.add,
                       size: 30,
                     ))

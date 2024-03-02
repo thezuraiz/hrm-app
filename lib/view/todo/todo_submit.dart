@@ -127,7 +127,7 @@ class _TodoSubmitState extends State<TodoSubmit> {
                             decoration: const InputDecoration(
                                 label: Text("Start Date")),
                             onTap: () {
-                              todoSubmitController.selectDate(context,
+                              globalController.selectDate(context,
                                   todoSubmitController.startDate.value);
                             },
                             validator: RequiredValidator(errorText: "Required"),
@@ -141,7 +141,7 @@ class _TodoSubmitState extends State<TodoSubmit> {
                             decoration:
                                 const InputDecoration(label: Text("End Date")),
                             onTap: () {
-                              todoSubmitController.selectDate(
+                              globalController.selectDate(
                                   context, todoSubmitController.endDate.value);
                             },
                             validator: RequiredValidator(errorText: "Required"),
