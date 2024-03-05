@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:hrmapp/controller/globalController.dart';
-import 'package:hrmapp/controller/leaveControllers/leaveSubmitController.dart';
-import 'package:hrmapp/view/leaves/leave_screen.dart';
+import 'package:hrmapp/controller/leaveControllers/leaveController.dart';
 
 class LeaveSubmit extends StatefulWidget {
   const LeaveSubmit({super.key});
@@ -13,8 +12,7 @@ class LeaveSubmit extends StatefulWidget {
 }
 
 class _LeaveSubmitState extends State<LeaveSubmit> {
-  LeaveSubmitController leaveSubmitController =
-      Get.put(LeaveSubmitController());
+  LeaveController leaveSubmitController = Get.put(LeaveController());
   GlobalController globalController = Get.put(GlobalController());
 
   @override
@@ -31,7 +29,7 @@ class _LeaveSubmitState extends State<LeaveSubmit> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      "Leaves",
+                      "Create Leave",
                       style:
                           TextStyle(fontSize: 42, fontWeight: FontWeight.w500),
                     ),
@@ -101,6 +99,7 @@ class _LeaveSubmitState extends State<LeaveSubmit> {
                             context, leaveSubmitController.fromDate.value);
                       },
                       validator: RequiredValidator(errorText: "Required"),
+                      keyboardType: TextInputType.none,
                     ),
                     SizedBox(height: Get.height * 0.03),
                     TextFormField(
@@ -111,6 +110,7 @@ class _LeaveSubmitState extends State<LeaveSubmit> {
                             context, leaveSubmitController.toDate.value);
                       },
                       validator: RequiredValidator(errorText: "Required"),
+                      keyboardType: TextInputType.none,
                     ),
                     SizedBox(height: Get.height * 0.03),
                     SizedBox(

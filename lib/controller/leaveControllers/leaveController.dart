@@ -2,14 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:hrmapp/controller/globalController.dart';
-import 'package:hrmapp/view/leaves/leave_screen.dart';
-import 'package:hrmapp/view/todo/todo_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../../utils/helperWid.dart';
 
-class LeaveSubmitController extends GetxController {
+class LeaveController extends GetxController {
   @override
   void onInit() async {
     // TODO: implement onInit
@@ -116,6 +116,43 @@ class LeaveSubmitController extends GetxController {
     }
   }
 
+  RxList Leaves = [].obs;
+  RxBool isLoading = false.obs;
+
+  Future<void> fetchLeaves() async {
+    debugPrint("Fetching Leaves");
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    debugPrint("Token in : $token");
+    try {
+      String url = "https://leaves-hrm.solutions36t.com/api/LeaveApi";
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': "Bearer $token"
+        },
+      );
+
+      debugPrint("Status: ${response.statusCode}");
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body) as Map;
+        final result = json['data'] as List;
+          Leaves.value = result;
+        // debugPrint("Response: ${data['data'].toString()}");
+        // debugPrint("Response: ${data.length}");
+      } else {
+        HelperWidgets.Errortoaster("Something Went Wrong");
+        throw Exception("Empty response body");
+      }
+    } catch (e) {
+      debugPrint("Failed to fetch Todo: $e");
+      throw Exception("Failed to fetch Todo: $e");
+    }
+      isLoading.value = true;
+  }
+
   Rx<TextEditingController> fromDate = TextEditingController().obs;
   Rx<TextEditingController> toDate = TextEditingController().obs;
 
@@ -150,9 +187,8 @@ class LeaveSubmitController extends GetxController {
         debugPrint("Form Submitted: $data");
         if (data['isSuccess']) {}
         // debugPrint("Leave Form Submited: $data");
+        fetchLeaves();
         loading.value = false;
-        leaveType.value = "";
-        priority.value = "";
         fromDate.value.text = "";
         toDate.value.text = "";
         HelperWidgets.Greentoaster("Form Submitted! ${data['isSuccess']}");
@@ -167,8 +203,7 @@ class LeaveSubmitController extends GetxController {
     } catch (e) {
       loading.value = false;
       debugPrint("Failed to submit form: $e");
-      HelperWidgets.Errortoaster(
-          "Failed to submit form. Please try again later.");
+      HelperWidgets.Errortoaster("Failed to submit form. Please try again later.");
     }
   }
 }

@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
             filled: true,
             fillColor: Colors.white70,
           ),
-          appBarTheme: AppBarTheme(
+          appBarTheme: const AppBarTheme(
             centerTitle: false,
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
