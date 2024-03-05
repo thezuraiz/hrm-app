@@ -172,6 +172,10 @@ class TodoSubmitController extends GetxController {
           selectedEmplyee.value = "";
           priority.value = "";
           isDone.value = false;
+
+          // Set Controllers to default
+          priorityDropdownOptions.value.first.values;
+          todoTypeDropdownOptions.value.first.values;
         }
         isLoading.value = false;
         HelperWidgets.Greentoaster("Form Submitted! ${data['isSuccess']}");

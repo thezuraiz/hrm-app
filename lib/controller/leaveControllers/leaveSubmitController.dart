@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hrmapp/controller/globalController.dart';
+import 'package:hrmapp/view/leaves/leave_screen.dart';
+import 'package:hrmapp/view/todo/todo_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../../utils/helperWid.dart';
@@ -147,7 +149,7 @@ class LeaveSubmitController extends GetxController {
         final data = jsonDecode(response.body);
         debugPrint("Form Submitted: $data");
         if (data['isSuccess']) {}
-        debugPrint("Leave Form Submited: $data");
+        // debugPrint("Leave Form Submited: $data");
         loading.value = false;
         leaveType.value = "";
         priority.value = "";
