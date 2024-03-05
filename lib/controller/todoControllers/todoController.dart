@@ -2,18 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:hrmapp/controller/globalController.dart';
 import 'package:hrmapp/utils/helperWid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-class TodoSubmitController extends GetxController {
-  @override
-  void onInit() async {
-    super.onInit();
-    await fetchPriority();
-    await fetchTodoType();
-  }
+class TodoController extends GetxController {
 
   Rx<TextEditingController> itemController = TextEditingController().obs;
   Rx<TextEditingController> descController = TextEditingController().obs;
@@ -31,6 +27,42 @@ class TodoSubmitController extends GetxController {
   RxList<Map> todoTypeDropdownOptions = <Map<dynamic, dynamic>>[].obs;
   RxString todoType = ''.obs;
 
+  RxList todos = [].obs;
+  RxBool loadingTodo = true.obs;
+
+  Future<void> fetchData() async {
+    debugPrint("Fetching Todoes");
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    // debugPrint("Token in : $token");
+    try {
+      final response = await http.get(
+        Uri.parse("https://leaves-hrm.solutions36t.com/api/TodoApi"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': "Bearer $token"
+        },
+      );
+
+      // debugPrint("Status: ${response.statusCode}");
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body) as Map;
+        final result = json['data'] as List;
+        todos.value = result;
+
+        // debugPrint("Response: ${data.toString()}");
+        // debugPrint("Response: ${data.length}");
+      } else {
+        HelperWidgets.Errortoaster("Empty response body");
+        throw Exception("Empty response body");
+      }
+    } catch (e) {
+      debugPrint("Failed to fetch Todo: $e");
+      throw Exception("Failed to fetch Todo: $e");
+    }
+      loadingTodo.value = false;
+  }
 
   Future fetchPriority() async {
     String carearUrl = '/TodoApi/TodoPriorities';
@@ -145,7 +177,7 @@ class TodoSubmitController extends GetxController {
         "TodoPriorityId": prior,
       };
 
-      debugPrint("FormData: ${formData.toString()}");
+      // debugPrint("FormData: ${formData.toString()}");
 
       const url = "${GlobalController.baseUrl}/TodoApi/Submit";
       final token = await SharedPreferences.getInstance()
@@ -162,15 +194,13 @@ class TodoSubmitController extends GetxController {
       // Handle response
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        debugPrint("Form Submitted: $data");
+        // debugPrint("Form Submitted: $data");
         if (data['isSuccess']) {
+          fetchData();
           itemController.value.text = "";
           descController.value.text = "";
-          todoType.value = "";
           startDate.value.text = "";
           endDate.value.text = "";
-          selectedEmplyee.value = "";
-          priority.value = "";
           isDone.value = false;
 
           // Set Controllers to default
@@ -180,7 +210,7 @@ class TodoSubmitController extends GetxController {
         isLoading.value = false;
         HelperWidgets.Greentoaster("Form Submitted! ${data['isSuccess']}");
       } else {
-        final data = jsonDecode(response.body);
+        // final data = jsonDecode(response.body);
         isLoading.value = false;
         // Get.snackbar("Error", data['errors'].toString());
         HelperWidgets.Errortoaster("Something Went Wrong");

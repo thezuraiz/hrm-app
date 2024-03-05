@@ -25,48 +25,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
     super.initState();
   }
 
-  LeaveController leaveController  = Get.put(LeaveController());
-
-
-  // List Leaves = [];
-  // bool isLoading = false;
-  //
-  // Future<void> fetchLeaves() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final token = prefs.getString('token');
-  //   debugPrint("Token in : $token");
-  //   try {
-  //     String url = "https://leaves-hrm.solutions36t.com/api/LeaveApi";
-  //     final response = await http.get(
-  //       Uri.parse(url),
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Accept': 'application/json',
-  //         'Authorization': "Bearer $token"
-  //       },
-  //     );
-  //
-  //     debugPrint("Status: ${response.statusCode}");
-  //     if (response.statusCode == 200) {
-  //       final json = jsonDecode(response.body) as Map;
-  //       final result = json['data'] as List;
-  //       setState(() {
-  //         Leaves = result;
-  //       });
-  //       // debugPrint("Response: ${data['data'].toString()}");
-  //       // debugPrint("Response: ${data.length}");
-  //     } else {
-  //       HelperWidgets.Errortoaster("Something Went Wrong");
-  //       throw Exception("Empty response body");
-  //     }
-  //   } catch (e) {
-  //     debugPrint("Failed to fetch Todo: $e");
-  //     throw Exception("Failed to fetch Todo: $e");
-  //   }
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  // }
+  LeaveController leaveController = Get.put(LeaveController());
 
   Future<void> deleteLeaves(Map data) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -103,9 +62,8 @@ class _LeaveScreenState extends State<LeaveScreen> {
       // debugPrint("Status: ${response.statusCode}");
       if (response.statusCode == 200) {
         HelperWidgets.Greentoaster("Leave Deleted");
-        final filtered =
-        leaveController.Leaves.where((element) => element['leaveId'] != data['leaveId'])
-                .toList();
+        final filtered = leaveController.Leaves.where(
+            (element) => element['leaveId'] != data['leaveId']).toList();
         leaveController.Leaves.value = filtered;
       } else {
         HelperWidgets.Errortoaster("Something Went Wrong");
@@ -116,7 +74,6 @@ class _LeaveScreenState extends State<LeaveScreen> {
       throw Exception("Failed to fetch Todo: $e");
     }
     leaveController.isLoading.value = true;
-
   }
 
   @override
@@ -130,12 +87,12 @@ class _LeaveScreenState extends State<LeaveScreen> {
         centerTitle: false,
         actions: [
           TextButton(
-            onPressed: () => Get.to(LeaveSubmit()),
+            onPressed: () => Get.to(const LeaveSubmit()),
             child: Row(
               children: [
                 const Text("Add",
                     style: TextStyle(fontSize: 32, color: Colors.blue)),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Container(
@@ -153,117 +110,188 @@ class _LeaveScreenState extends State<LeaveScreen> {
         ],
       ),
       body: Obx(() => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Visibility(
-          visible: leaveController.isLoading.value,
-          replacement: Center(
-            child: CircularProgressIndicator(),
-          ),
-          child: Visibility(
-            visible: leaveController.Leaves.value.isNotEmpty,
-            replacement: Container(
-              child: Center(
-                child: Text(
-                  "No Leaves",
-                  style: Theme.of(context).textTheme.displayMedium,
-                ),
+            padding: const EdgeInsets.all(8.0),
+            child: Visibility(
+              visible: leaveController.isLoading.value,
+              replacement: const Center(
+                child: CircularProgressIndicator(),
               ),
-            ),
-            child: ListView.builder(
-                itemCount: leaveController.Leaves.value.length,
-                itemBuilder: (_c, i) {
-                  final cardData = leaveController.Leaves.value[i];
-                  DateTime fromData =
-                  DateTime.parse(cardData['fromDate'].toString());
-                  DateTime toData =
-                  DateTime.parse(cardData['toDate'].toString());
+              child: Visibility(
+                visible: leaveController.Leaves.value.isNotEmpty,
+                replacement: Center(
+                  child: Text(
+                    "No Leaves",
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                ),
+                child: ListView.builder(
+                    itemCount: leaveController.Leaves.value.length,
+                    itemBuilder: (_c, i) {
+                      final cardData = leaveController.Leaves.value[i];
+                      DateTime fromData =
+                          DateTime.parse(cardData['fromDate'].toString());
+                      DateTime toData =
+                          DateTime.parse(cardData['toDate'].toString());
 
-                  String formattedDate(final date) {
-                    return DateFormat('dd-MM-yyyy').format(date).toString();
-                  }
+                      String formattedDate(final date) {
+                        return DateFormat('dd-MM-yyyy').format(date).toString();
+                      }
 
-                  // debugPrint("leaveType: ${cardData['leaveType']}");
-                  // debugPrint("onBehalfId: ${cardData['onBehalfId']}");
-                  // debugPrint("leaveName: ${cardData['leaveName']}");
-                  // debugPrint("description: ${cardData['description']}");
-                  // debugPrint("emergencyCall: ${cardData['emergencyCall']}");
-                  // debugPrint("fromDate: ${cardData['fromDate']}");
-                  // debugPrint("toDate: ${cardData['toDate']}");
-                  // debugPrint("isPaidLeave: ${cardData['isPaidLeave']}");
+                      // debugPrint("leaveType: ${cardData['leaveType']}");
+                      // debugPrint("onBehalfId: ${cardData['onBehalfId']}");
+                      // debugPrint("leaveName: ${cardData['leaveName']}");
+                      // debugPrint("description: ${cardData['description']}");
+                      // debugPrint("emergencyCall: ${cardData['emergencyCall']}");
+                      // debugPrint("fromDate: ${cardData['fromDate']}");
+                      // debugPrint("toDate: ${cardData['toDate']}");
+                      // debugPrint("isPaidLeave: ${cardData['isPaidLeave']}");
 
-                  return Slidable(
-                    endActionPane: ActionPane(
-                      motion: const ScrollMotion(),
-                      children: [
-                        SlidableAction(
-                            backgroundColor: Colors.red,
-                            borderRadius: BorderRadius.circular(20),
-                            autoClose: true,
-                            icon: Icons.delete,
-                            label: "Remove",
-                            onPressed: (context){
-                              Get.defaultDialog(
-                                contentPadding: const EdgeInsets.all(20),
-                                content: Text("Are You Sure To Delete?",style: Theme.of(context).textTheme.headlineSmall,),
-                                onConfirm: () => deleteLeaves(cardData),
-                                onCancel: () => Get.back()
-                              );
-                              // deleteLeaves(cardData);
-                            }),
-                      ],
-                    ),
-                    child: Card(
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 8),
-                        // leading: CircleAvatar(
-                        //   child: Text("${index + 1}"),
-                        // ),
-                        title: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                cardData['leaveType']['name'].toString(),
-                                style: Theme.of(context).textTheme.titleLarge,
-                              )
-                            ]),
-                        subtitle: Column(
+                      return Slidable(
+                        endActionPane: ActionPane(
+                          motion: const ScrollMotion(),
                           children: [
-                            SizedBox(
-                              height: 10,
-                            ),
-                            TodoHelper.RowHelper("OnBehalf: ",
-                                "${cardData['onBehalf']['firstName']} ${cardData['onBehalf']['lastName']}"),
-                            TodoHelper.RowHelper(
-                              "Start Date: ",
-                              formattedDate(fromData),
-                            ),
-                            TodoHelper.RowHelper(
-                                "Last Date: ", formattedDate(toData)),
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  "Is Approved",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                Checkbox(
-                                    value: cardData['isApproved'],
-                                    onChanged: (e) {})
-                              ],
-                            )
+                            SlidableAction(
+                                backgroundColor: Colors.red,
+                                borderRadius: BorderRadius.circular(20),
+                                autoClose: true,
+                                icon: Icons.delete,
+                                label: "Remove",
+                                onPressed: (context) {
+                                  Get.defaultDialog(
+                                    title: 'Confirm Deletion',
+                                    contentPadding: const EdgeInsets.all(20),
+                                    content: Column(
+                                      children: [
+                                        Text(
+                                          "Are you sure you want to delete this leave?",
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6,
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            OutlinedButton(
+                                              onPressed: () => Get.back(),
+                                              style: ButtonStyle(
+                                                side: MaterialStateProperty
+                                                    .resolveWith<BorderSide>(
+                                                        (Set<MaterialState>
+                                                            states) {
+                                                  if (states.contains(
+                                                      MaterialState.disabled)) {
+                                                    return const BorderSide(
+                                                        color: Colors
+                                                            .grey); // Adjust the color for disabled state if needed
+                                                  }
+                                                  return const BorderSide(
+                                                      color: Colors
+                                                          .blue); // Border color for enabled state
+                                                }),
+                                              ),
+                                              child: const Text(
+                                                'NO',
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            OutlinedButton(
+                                              style: ButtonStyle(
+                                                side: MaterialStateProperty
+                                                    .resolveWith<BorderSide>(
+                                                  (Set<MaterialState> states) {
+                                                    if (states.contains(
+                                                        MaterialState
+                                                            .disabled)) {
+                                                      return const BorderSide(
+                                                          color: Colors
+                                                              .grey); // Adjust the color for disabled state if needed
+                                                    }
+                                                    return const BorderSide(
+                                                        color: Colors
+                                                            .blue); // Border color for enabled state
+                                                  },
+                                                ),
+                                                backgroundColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.blue),
+                                                foregroundColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.white),
+                                              ),
+                                              onPressed: () {
+                                                Get.back();
+                                                deleteLeaves(cardData);
+                                              },
+                                              child: const Text(
+                                                'YES',
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }),
                           ],
                         ),
-                      ),
-                    ),
-                  );
-                }),
-          ),
-        ),
-      )),
+                        child: Card(
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 8),
+                            // leading: CircleAvatar(
+                            //   child: Text("${index + 1}"),
+                            // ),
+                            title: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    cardData['leaveType']['name'].toString(),
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
+                                  )
+                                ]),
+                            subtitle: Column(
+                              children: [
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                TodoHelper.RowHelper("OnBehalf: ",
+                                    "${cardData['onBehalf']['firstName']} ${cardData['onBehalf']['lastName']}"),
+                                TodoHelper.RowHelper(
+                                  "Start Date: ",
+                                  formattedDate(fromData),
+                                ),
+                                TodoHelper.RowHelper(
+                                    "Last Date: ", formattedDate(toData)),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      "Is Approved",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    Checkbox(
+                                        value: cardData['isApproved'],
+                                        onChanged: (e) {})
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+              ),
+            ),
+          )),
     );
   }
 }
