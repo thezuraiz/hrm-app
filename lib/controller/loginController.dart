@@ -17,7 +17,7 @@ class LoginController extends GetxController {
   RxBool showPassword = false.obs;
   RxBool isLoading = false.obs;
 
-  Future<String> loginApi(String baseUrl) async {
+  Future<void> loginApi(String baseUrl) async {
     isLoading.value = true;
 
     final email = emailController.text.trim();
@@ -46,12 +46,12 @@ class LoginController extends GetxController {
         debugPrint('Time ${DateTime.now()}');
         HelperWidgets.Greentoaster("You are Loggined");
         isLoading.value = false;
+        emailController.text = '';
+        passwordController.text = '';
         Get.off(const LandingScreen());
-        return response.body;
       } else {
         isLoading.value = false;
         HelperWidgets.Errortoaster("Invalid Credentials");
-        return '';
       }
     } on SocketException {
       isLoading.value = false;
