@@ -6,7 +6,6 @@ import 'package:hrmapp/utils/helperWid.dart';
 import 'package:hrmapp/view/leaves/leave_submit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import '../../utils/todo_helperWidgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -260,13 +259,13 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                TodoHelper.RowHelper("OnBehalf: ",
+                                HelperWidgets.RowHelper("OnBehalf: ",
                                     "${cardData['onBehalf']['firstName']} ${cardData['onBehalf']['lastName']}"),
-                                TodoHelper.RowHelper(
+                                HelperWidgets.RowHelper(
                                   "Start Date: ",
                                   formattedDate(fromData),
                                 ),
-                                TodoHelper.RowHelper(
+                                HelperWidgets.RowHelper(
                                     "Last Date: ", formattedDate(toData)),
                                 Row(
                                   mainAxisAlignment:
@@ -291,7 +290,8 @@ class _LeaveScreenState extends State<LeaveScreen> {
                     }),
               ),
             ),
-          )),
+          ),
+      ),
     );
   }
 }

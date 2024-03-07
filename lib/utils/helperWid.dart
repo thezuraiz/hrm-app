@@ -21,4 +21,32 @@ class HelperWidgets {
       margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
     );
   }
+
+  static Widget RowHelper(String firstData, String secondData){
+    return Row(
+      mainAxisAlignment:
+      MainAxisAlignment.spaceBetween,
+      children: [
+        Text(firstData,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        Text(secondData,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            )
+        ),
+      ],
+    );
+  }
+
+  static Widget SizedWid(){
+    return SizedBox(
+      height: Get.height * 0.025,
+    );
+  }
+
 }

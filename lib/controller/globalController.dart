@@ -7,12 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class GlobalController extends GetxController{
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
-    onBehalf();
-  }
+
 
   static const String baseUrl = "https://leaves-hrm.solutions36t.com/api";
 

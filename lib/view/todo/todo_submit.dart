@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:hrmapp/controller/globalController.dart';
 import 'package:hrmapp/controller/todoControllers/todoController.dart';
 import 'package:hrmapp/utils/helperWid.dart';
-import 'package:hrmapp/utils/todo_helperWidgets.dart';
 
 class TodoSubmit extends StatefulWidget {
   const TodoSubmit({super.key});
@@ -46,14 +45,14 @@ class _TodoSubmitState extends State<TodoSubmit> {
                     validator: RequiredValidator(errorText: "Required"),
                     controller: todoSubmitController.itemController.value,
                   ),
-                  TodoHelper.SizedWid(),
+                  HelperWidgets.SizedWid(),
                   TextFormField(
                     decoration:
                         const InputDecoration(label: Text("Description")),
                     validator: RequiredValidator(errorText: "Required"),
                     controller: todoSubmitController.descController.value,
                   ),
-                  TodoHelper.SizedWid(),
+                  HelperWidgets.SizedWid(),
                   Row(
                     children: [
                       Expanded(
@@ -117,7 +116,7 @@ class _TodoSubmitState extends State<TodoSubmit> {
                       ),
                     ],
                   ),
-                  TodoHelper.SizedWid(),
+                  HelperWidgets.SizedWid(),
                   Row(
                     children: [
                       Expanded(
@@ -149,7 +148,7 @@ class _TodoSubmitState extends State<TodoSubmit> {
                       ),
                     ],
                   ),
-                  TodoHelper.SizedWid(),
+                  HelperWidgets.SizedWid(),
                   DropdownMenu(
                     label: const Text("Employee"),
                     dropdownMenuEntries:
@@ -166,7 +165,7 @@ class _TodoSubmitState extends State<TodoSubmit> {
                     },
                     expandedInsets: const EdgeInsets.all(0),
                   ),
-                  TodoHelper.SizedWid(),
+                  HelperWidgets.SizedWid(),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -185,7 +184,7 @@ class _TodoSubmitState extends State<TodoSubmit> {
                               todoSubmitController.isDone.value = value),
                     ],
                   ),
-                  TodoHelper.SizedWid(),
+                  HelperWidgets.SizedWid(),
                   todoSubmitController.isLoading.value
                       ? const Center(
                           child: CircularProgressIndicator(),

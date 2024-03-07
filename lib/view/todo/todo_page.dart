@@ -2,11 +2,9 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:hrmapp/controller/todoControllers/todoController.dart';
 import 'package:hrmapp/utils/helperWid.dart';
-import 'package:hrmapp/utils/todo_helperWidgets.dart';
 import 'package:hrmapp/view/todo/todo_submit.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -235,15 +233,15 @@ class _TodoPageState extends State<TodoPage> {
                                   ]),
                               subtitle: Column(
                                 children: [
-                                  TodoHelper.RowHelper("Priority: ",
+                                  HelperWidgets.RowHelper("Priority: ",
                                       "${todo['todoPriority']['name']}"),
-                                  TodoHelper.RowHelper(
+                                  HelperWidgets.RowHelper(
                                       "Type: ", "${todo['todoType']['name']}"),
-                                  TodoHelper.RowHelper("OnBehalf: ",
+                                  HelperWidgets.RowHelper("OnBehalf: ",
                                       "${todo['onBehalf']['firstName']}"),
-                                  TodoHelper.RowHelper(
+                                  HelperWidgets.RowHelper(
                                       "Start Date: ", formattedDate),
-                                  TodoHelper.RowHelper("IsDone: ",
+                                  HelperWidgets.RowHelper("IsDone: ",
                                       todo['isDone'] ? "Done" : "Not Done"),
                                   Row(
                                     mainAxisAlignment:

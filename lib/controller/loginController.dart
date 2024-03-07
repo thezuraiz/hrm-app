@@ -6,7 +6,6 @@ import 'package:get/get_rx/get_rx.dart';
 import 'package:hrmapp/controller/globalController.dart';
 import 'package:hrmapp/utils/helperWid.dart';
 import 'package:hrmapp/view/landingScreen.dart';
-import 'package:hrmapp/view/todo/todo_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -42,6 +41,7 @@ class LoginController extends GetxController {
         debugPrint("response.body: ${response.body}");
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString("token", jsonDecode(response.body)["token"]);
+        prefs.setString("userEmail", email);
         debugPrint('token: ${jsonDecode(response.body)["token"]}');
         debugPrint('Time ${DateTime.now()}');
         HelperWidgets.Greentoaster("You are Loggined");

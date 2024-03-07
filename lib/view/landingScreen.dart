@@ -1,16 +1,44 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hrmapp/utils/helperWid.dart';
+import 'package:hrmapp/controller/globalController.dart';
 import 'package:hrmapp/view/documents/documentApi.dart';
 import 'package:hrmapp/view/leaves/leave_screen.dart';
+import 'package:hrmapp/view/login_screen.dart';
 import 'package:hrmapp/view/todo/todo_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LandingScreen extends StatelessWidget {
+class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
 
   @override
+  State<LandingScreen> createState() => _LandingScreenState();
+}
+
+class _LandingScreenState extends State<LandingScreen> {
+  String email = '';
+  GlobalController globalController = Get.put(GlobalController());
+
+  @override
+  void initState() {
+    globalController.onBehalf();
+    loadUserEmail().then((value) {
+      setState(() {
+        email = value ?? '';
+      });
+    });
+    super.initState();
+  }
+
+
+  Future<String?> loadUserEmail() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("userEmail");
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -24,21 +52,21 @@ class LandingScreen extends StatelessWidget {
               UserAccountsDrawerHeader(
                 accountName: null,
                 accountEmail: Text(
-                  "Hilda.Haynes@leaves-hrm.com",
-                  style: TextStyle(
+                  email,
+                  style: const TextStyle(
                     fontSize: 20,
                   ),
                 ),
-                currentAccountPicture: CircleAvatar(
+                currentAccountPicture: const CircleAvatar(
                   child: Icon(
                     Icons.person_outline,
                     size: 60,
                   ),
                 ),
-                currentAccountPictureSize: Size.square(85),
+                currentAccountPictureSize: const Size.square(85),
               ),
               Padding(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   children: [
                     ListTile(
@@ -46,38 +74,35 @@ class LandingScreen extends StatelessWidget {
                         "Urlaub",
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
-                      trailing: Icon(CupertinoIcons.airplane),
+                      trailing: const Icon(CupertinoIcons.airplane),
                       onTap: () => Get.to(const TodoPage()),
                     ),
-                    Divider(),
+                    const Divider(),
                     ListTile(
                       leading: Text(
                         "Aufgaben",
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
-                      trailing: Icon(CupertinoIcons.alarm),
-                      onTap: () => HelperWidgets.Errortoaster(
-                          "Module Under Developement"),
+                      trailing: const Icon(CupertinoIcons.alarm),
+                      onTap: () => Get.to(const LeaveScreen()),
                     ),
-                    Divider(),
+                    const Divider(),
                     ListTile(
                       leading: Text(
                         "Dokumente",
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
-                      trailing: Icon(CupertinoIcons.add_circled),
-                      onTap: () => HelperWidgets.Errortoaster(
-                          "Module Under Developement"),
+                      trailing: const Icon(CupertinoIcons.add_circled),
+                      onTap: () => Get.to(const DocumentApi()),
                     ),
-                    Divider(),
+                    const Divider(),
                     ListTile(
                       leading: Text(
                         "Sign Out",
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
-                      trailing: Icon(Icons.logout_outlined),
-                      onTap: () => HelperWidgets.Errortoaster(
-                          "Module Under Developement"),
+                      trailing: const Icon(Icons.logout_outlined),
+                      onTap: () => Get.offAll(const LoginPage()),
                     ),
                   ],
                 ),
@@ -116,7 +141,7 @@ class LandingScreen extends StatelessWidget {
                   Expanded(
                     child: InkWell(
                       borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      onTap: () => Get.to(LeaveScreen()),
+                      onTap: () => Get.to(const LeaveScreen()),
                       child: Container(
                         height: Get.height * 0.235,
                         decoration: const BoxDecoration(

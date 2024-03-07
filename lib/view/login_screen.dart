@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:hrmapp/controller/globalController.dart';
 import 'package:hrmapp/controller/loginController.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,6 +15,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     LoginController loginController = Get.put(LoginController());
@@ -93,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                                 loginController
                                     .loginApi(GlobalController.baseUrl);
                               },
-                              icon: CircleAvatar(
+                              icon: const CircleAvatar(
                                 backgroundColor: Colors.black,
                                 radius: 33,
                                 child: Icon(
