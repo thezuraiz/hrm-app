@@ -61,7 +61,6 @@ class _TodoPageState extends State<TodoPage> {
           headers: headers, body: jsonEncode(todoData));
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
-
         // debugPrint("Form Submitted: $data");
         if (data['isSuccess']) {
           final filteredTodoes = todoController.todos.value
@@ -104,7 +103,7 @@ class _TodoPageState extends State<TodoPage> {
               replacement: Center(
                   child: Text(
                 "No Todoes",
-                style: Theme.of(context).textTheme.displayMedium,
+                style: Theme.of(context).textTheme.displaySmall,
               )),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -138,11 +137,11 @@ class _TodoPageState extends State<TodoPage> {
                                   content: Column(
                                     children: [
                                       Text(
-                                        "Are you sure you want to delete this todo?",
+                                        "Are you sure to delete this todo?",
                                         textAlign: TextAlign.center,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline6,
+                                            .headlineSmall,
                                       ),
                                       const SizedBox(
                                         height: 8,
@@ -218,21 +217,33 @@ class _TodoPageState extends State<TodoPage> {
                           child: ListTile(
                               contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 8),
-                              leading: CircleAvatar(
-                                child: Text("${i + 1}"),
-                              ),
-                              title: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      todo['todoItem'].toString(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge,
-                                    )
-                                  ]),
+                              // title: Row(
+                              //   children: [
+                              //     CircleAvatar(
+                              //       child: Text("${i + 1}"),
+                              //     )
+                              //   ],
+                              // ),
                               subtitle: Column(
                                 children: [
+                                  Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          'Title',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        Text(
+                                          todo['todoItem'].toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge,
+                                        )
+                                      ]),
                                   HelperWidgets.RowHelper("Priority: ",
                                       "${todo['todoPriority']['name']}"),
                                   HelperWidgets.RowHelper(

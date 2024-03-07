@@ -102,7 +102,87 @@ class _LandingScreenState extends State<LandingScreen> {
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       trailing: const Icon(Icons.logout_outlined),
-                      onTap: () => Get.offAll(const LoginPage()),
+                      onTap: () => Get.defaultDialog(
+                        title: 'Confirm Sign Out',
+                        titlePadding: const EdgeInsets.only(top: 15),
+                        contentPadding: const EdgeInsets.only(
+                            left: 20, right: 20, top: 10),
+                        content: Column(
+                          children: [
+                            Text(
+                              "Are you sure to Signout",
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall,
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.center,
+                              children: [
+                                OutlinedButton(
+                                  onPressed: () => Get.back(),
+                                  style: ButtonStyle(
+                                    side: MaterialStateProperty
+                                        .resolveWith<BorderSide>(
+                                          (Set<MaterialState> states) {
+                                        if (states.contains(
+                                            MaterialState.disabled)) {
+                                          return const BorderSide(
+                                              color: Colors
+                                                  .grey); // Adjust the color for disabled state if needed
+                                        }
+                                        return const BorderSide(
+                                            color: Colors
+                                                .blue); // Border color for enabled state
+                                      },
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    'NO',
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                OutlinedButton(
+                                  style: ButtonStyle(
+                                    side: MaterialStateProperty
+                                        .resolveWith<BorderSide>(
+                                          (Set<MaterialState> states) {
+                                        if (states.contains(
+                                            MaterialState.disabled)) {
+                                          return const BorderSide(
+                                              color: Colors
+                                                  .grey); // Adjust the color for disabled state if needed
+                                        }
+                                        return const BorderSide(
+                                            color: Colors
+                                                .blue); // Border color for enabled state
+                                      },
+                                    ),
+                                    backgroundColor:
+                                    MaterialStateProperty.all(
+                                        Colors.blue),
+                                    foregroundColor:
+                                    MaterialStateProperty.all(
+                                        Colors.white),
+                                  ),
+                                  onPressed: () {
+                                    Get.back();
+                                    Get.offAll(const LoginPage());
+                                  },
+                                  child: const Text(
+                                    'YES',
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      // onTap: () => Get.offAll(const LoginPage()),
                     ),
                   ],
                 ),

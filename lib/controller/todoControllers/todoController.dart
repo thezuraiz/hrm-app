@@ -65,6 +65,7 @@ class TodoController extends GetxController {
   }
 
   Future fetchPriority() async {
+    debugPrint('Fetching Priority');
     String carearUrl = '/TodoApi/TodoPriorities';
     String url = "${GlobalController.baseUrl}$carearUrl";
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -81,10 +82,10 @@ class TodoController extends GetxController {
         },
       );
 
-      debugPrint("Status: ${response.statusCode}");
+      // debugPrint("Status: ${response.statusCode}");
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        debugPrint("Response: ${data.toString()}");
+        // debugPrint("Response: ${data.toString()}");
 
         var context = data['data'];
         for (Map i in context) {
@@ -97,7 +98,7 @@ class TodoController extends GetxController {
             "value": i['value']
           });
         }
-        debugPrint("context $context");
+        // debugPrint("context $context");
         return data;
       } else {
         throw Exception("Empty response body");
@@ -109,6 +110,7 @@ class TodoController extends GetxController {
   }
 
   Future fetchTodoType() async {
+    debugPrint('Fetching TodoTypes');
     String carearUrl = '/TodoApi/TodoTypes';
     String url = "${GlobalController.baseUrl}$carearUrl";
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -125,7 +127,7 @@ class TodoController extends GetxController {
         },
       );
 
-      debugPrint("Status: ${response.statusCode}");
+      // debugPrint("Status: ${response.statusCode}");
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         // debugPrint("Response: ${data.toString()}");
@@ -141,7 +143,6 @@ class TodoController extends GetxController {
             "value": i['value']
           });
         }
-        debugPrint("context $context");
         return data;
       } else {
         throw Exception("Empty response body");

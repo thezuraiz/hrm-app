@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 SizedBox(height: Get.height * 0.19),
                 Lottie.asset("assets/animations/loginanimation.json",
-                    repeat: false, fit: BoxFit.contain, width: 230),
+                    repeat: false, fit: BoxFit.contain, width: 210),
                 SizedBox(height: Get.height * 0.1),
                 TextFormField(
                   decoration: const InputDecoration(
@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(
-                  height: Get.height * 0.08,
+                  height: Get.height * 0.05,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: Theme.of(context)
                           .textTheme
                           .displayMedium!
-                          .copyWith(fontWeight: FontWeight.w700),
+                          .copyWith(fontWeight: FontWeight.w700,color: Colors.blueAccent),
                     ),
                     Obx(
                       () => loginController.isLoading.value
@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                                     .loginApi(GlobalController.baseUrl);
                               },
                               icon: const CircleAvatar(
-                                backgroundColor: Colors.black,
+                                backgroundColor: Colors.blueAccent,
                                 radius: 33,
                                 child: Icon(
                                   Icons.arrow_forward_rounded,

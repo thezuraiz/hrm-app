@@ -25,10 +25,11 @@ class DocumentController extends GetxController{
   RxList<Map> documentType = <Map<dynamic, dynamic>>[].obs;
 
   Future<void> fetchDocuments() async {
+    debugPrint('Fetching Documents');
     loadingDocuments.value = true;
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    debugPrint("Token in : $token");
+    // debugPrint("Token in : $token");
     try {
       String url = "https://leaves-hrm.solutions36t.com/api/DocumentApi";
       final response = await http.get(
@@ -65,6 +66,7 @@ class DocumentController extends GetxController{
   }
 
   Future<void> fetchDocumentTypes() async {
+    debugPrint('Fetching Document Types');
     String url = 'https://leaves-hrm.solutions36t.com/api/DocumentApi/DocumentTypes';
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("token");
