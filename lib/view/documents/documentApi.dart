@@ -1,10 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:hrmapp/controller/documentControllers/documentController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:hrmapp/view/documents/addDocument.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../controller/globalController.dart';
 import '../../utils/helperWid.dart';
+import 'package:http/http.dart' as http;
 
 class DocumentApi extends StatefulWidget {
   const DocumentApi({super.key});
@@ -109,10 +115,10 @@ class _DocumentApiState extends State<DocumentApi> {
                               borderRadius: const BorderRadius.only(
                                   topRight: Radius.circular(20),
                                   bottomRight: Radius.circular(20)),
-                              onPressed: (context) {
-                                // debugPrint("CardData: $cardData");
-                                HelperWidgets.Errortoaster("Module Under Development!");
-                              })
+                              onPressed: (context)async {
+                                documentController.deleteDocument(cardData);
+                              },
+                          )
                         ],
                       ),
                       child: Card(

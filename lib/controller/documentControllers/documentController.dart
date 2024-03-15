@@ -136,6 +136,63 @@ class DocumentController extends GetxController{
     }
   }
 
+  void deleteDocument(Map obj)async{
+    debugPrint("CardData: $obj");
+    final dataToDelete = {
+      "createdAtUtc": obj['createdAtUtc'],
+      "updatedById": obj['updatedById'],
+      "updatedAtUtc": obj['updatedAtUtc'],
+      "documentId": obj['documentId'],
+      "documentName": obj['documentName'],
+      "documentTypeId": obj['documentTypeId'],
+      "documentType": {
+        "createdById": obj['documentType']['createdById'],
+        "createdAtUtc":  obj['documentType']['createdAtUtc'],
+        "documentTypeId": obj['documentType']['documentTypeId'],
+        "name": "String"
+      },
+      "relativeName": obj['relativeName'],
+      "fileSize": obj['fileSize'],
+      "employeeId": obj['employeeId']
+    };
+    // debugPrint('Delete: $dataToDelete');
+
+    const url = "${GlobalController.baseUrl}/DocumentApi/Delete";
+    final token = await SharedPreferences.getInstance()
+        .then((prefs) => prefs.getString("token"));
+    final headers = {
+      'Content-Type': 'application/json-patch+json',
+      'Accept': 'application/json',
+      'Authorization': "Bearer $token"
+    };
+
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: headers, body: jsonEncode(dataToDelete));
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        // debugPrint("Form Submitted: $data");
+        if (data['isSuccess']) {
+          final filteredDocument = documents.value
+              .where((element) => element['documentId'] != dataToDelete['documentId'])
+              .toList();
+          documents.value = filteredDocument;
+          HelperWidgets.Greentoaster("Document Deleted!");
+        } else {
+          HelperWidgets.Errortoaster("Something Wents Wrong!");
+        }
+      } else {
+        HelperWidgets.Errortoaster("Request Failed!");
+      }
+    } on SocketException catch (e){
+      HelperWidgets.Errortoaster("Internet Connection Failed!");
+    }
+    catch (e) {
+      debugPrint("Failed to Delete: $e");
+      Get.snackbar("Error", "Failed to Delete. Please try again later.");
+    }
+  }
+
   Future<void> addDocument() async {
     formLoading.value = true;
     try {
@@ -188,9 +245,6 @@ class DocumentController extends GetxController{
       HelperWidgets.Errortoaster("Failed to submit form. Please try again later.");
     }
   }
-
-
-
 
   setFile()async{
     file.value = File('');
